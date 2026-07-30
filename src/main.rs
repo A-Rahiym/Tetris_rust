@@ -19,7 +19,6 @@ async fn main() {
         clear_background(BLACK);
 
         Renderer::draw(&game);
-
         next_frame().await
     }
 }

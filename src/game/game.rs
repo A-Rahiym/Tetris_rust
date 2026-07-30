@@ -28,14 +28,14 @@ impl Game {
     pub fn new() -> Self {
         Self {
             active_pieces: Piece::new(
-                PieceKind::T,
-                Position { x: 3, y: 0 },
+                PieceKind::I,
+                Position { x: 3, y: 8 },
                 Rotation::North,
             ),
             next_pieces: Piece::new(
                 PieceKind::L,
-                Position { x: 3, y: 0 },
-                Rotation::North,
+                Position { x: 2, y: 7 },
+                Rotation::East,
             ),
             state: GameState::Running,
             board: Board::new(),
