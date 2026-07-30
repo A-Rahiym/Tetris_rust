@@ -18,6 +18,9 @@ async fn main() {
     loop {
         clear_background(BLACK);
 
+        let action = input::input::poll();
+        game.update(action);
+
         Renderer::draw(&game);
         next_frame().await
     }
