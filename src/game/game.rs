@@ -3,7 +3,10 @@ use crate::game::level::GameLevel;
 use crate::game::speed::GameSpeed;
 use crate::game::state::GameState;
 use crate::input::actions::PlayerAction;
+use crate::piece::kind::PieceKind;
 use crate::piece::piece::Piece;
+use crate::piece::position::Position;
+use crate::piece::rotation::Rotation;
 use crate::score::score::Score;
 use crate::timing::timing::Timing;
 
@@ -22,6 +25,31 @@ pub struct Game {
 }
 
 impl Game {
+    pub fn new() -> Self {
+        Self {
+            active_pieces: Piece::new(
+                PieceKind::T,
+                Position { x: 3, y: 0 },
+                Rotation::North,
+            ),
+            next_pieces: Piece::new(
+                PieceKind::L,
+                Position { x: 3, y: 0 },
+                Rotation::North,
+            ),
+            state: GameState::Running,
+            board: Board::new(),
+            score: Score { points: 0 },
+            timing: Timing {
+                tick_duration: std::time::Duration::from_millis(500),
+            },
+            speed: GameSpeed {
+                gravity_seconds: 1,
+            },
+            level: GameLevel { level: 1 },
+        }
+    }
+
     pub fn update(&mut self, action: Option<PlayerAction>) {
         self.handle_input(action);
 
