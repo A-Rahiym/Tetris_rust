@@ -37,12 +37,17 @@ impl Renderer {
     fn draw_board(game: &Game) {
         for (row, cells) in game.board.cells.iter().enumerate() {
             for (col, cell) in cells.iter().enumerate() {
+                let x = BOARD_X + col as f32 * CELL_SIZE;
+                let y = BOARD_Y + row as f32 * CELL_SIZE;
+
                 match cell {
-                    Cell::Empty => {}
+                    Cell::Empty => {
+                        draw_rectangle(x, y, CELL_SIZE, CELL_SIZE, DARKGRAY);
+                    }
                     Cell::Filled(kind) => {
                         draw_rectangle(
-                            BOARD_X + col as f32 * CELL_SIZE,
-                            BOARD_Y + row as f32 * CELL_SIZE,
+                            x,
+                            y,
                             CELL_SIZE,
                             CELL_SIZE,
                             Self::piece_color(*kind),
