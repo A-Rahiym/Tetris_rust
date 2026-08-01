@@ -1,3 +1,7 @@
+use std::time::Duration;
+
+use macroquad::prelude::*;
+
 use crate::board::board::Board;
 use crate::board::cell::Cell;
 use crate::game::level::GameLevel;
@@ -43,6 +47,7 @@ impl Game {
             score: Score { points: 0 },
             timing: Timing {
                 tick_duration: std::time::Duration::from_millis(500),
+                elapsed: std::time::Duration::ZERO,
             },
             speed: GameSpeed {
                 gravity_seconds: 1,
@@ -134,14 +139,18 @@ impl Game {
     }
 
     fn update_gravity(&mut self) {
+        if self.state != GameState::Running {
+            return;
+        }
 
-        // Has enough time elapsed?
+        self.timing.elapsed += Duration::from_secs_f32(get_frame_time());
 
-        // Try moving down
-
-        // If collision
-
-        // Lock Piece
+        if self.timing.elapsed >= self.timing.tick_duration {
+            self.timing.elapsed = Duration::ZERO;
+            if !self.try_offset(0, 1) {
+                self.lock_piece();
+            }
+        }
     }
 
     fn lock_piece(&mut self) {

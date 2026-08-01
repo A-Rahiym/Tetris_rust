@@ -3,4 +3,5 @@ use std::time::Duration;
 #[derive(Debug, Clone, PartialEq,)]
 pub struct Timing {
     pub tick_duration: Duration,
+    pub elapsed: Duration,
 }
