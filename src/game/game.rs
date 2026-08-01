@@ -3,7 +3,7 @@ use std::time::Duration;
 use macroquad::prelude::*;
 use ::rand::Rng;
 
-use crate::board::board::Board;
+use crate::board::board::{Board, BOARD_WIDTH, BOARD_HEIGHT};
 use crate::board::cell::Cell;
 use crate::game::level::GameLevel;
 use crate::game::speed::GameSpeed;
@@ -29,6 +29,8 @@ pub struct Game {
 
     pub speed: GameSpeed,
     pub level: GameLevel,
+
+    pub lines_cleared: usize,
 }
 
 impl Game {
@@ -55,6 +57,7 @@ impl Game {
                 gravity_seconds: 1,
             },
             level: GameLevel { level: 1 },
+            lines_cleared: 0,
         }
     }
 
@@ -164,7 +167,7 @@ impl Game {
                 }
                 let x = piece.position.x + col as i32;
                 let y = piece.position.y + row as i32;
-                if (0..10).contains(&x) && (0..20).contains(&y) {
+                if x >= 0 && x < BOARD_WIDTH as i32 && y >= 0 && y < BOARD_HEIGHT as i32 {
                     self.board.cells[y as usize][x as usize] = Cell::Filled(piece.kind);
                 }
             }
@@ -172,12 +175,31 @@ impl Game {
     }
 
     fn check_for_completed_rows(&mut self) {
+        let full: Vec<usize> = (0..BOARD_HEIGHT)
+            .filter(|&row| {
+                self.board.cells[row]
+                    .iter()
+                    .all(|cell| matches!(cell, Cell::Filled(_)))
+            })
+            .collect();
 
-        // Scan every row
+        if full.is_empty() {
+            return;
+        }
 
-        // Remove completed ones
+        let mut collapsed = [[Cell::Empty; BOARD_WIDTH]; BOARD_HEIGHT];
+        let mut write = BOARD_HEIGHT - 1;
 
-        // Collapse board
+        for read in (0..BOARD_HEIGHT).rev() {
+            if full.contains(&read) {
+                continue;
+            }
+            collapsed[write] = self.board.cells[read];
+            write = write.wrapping_sub(1);
+        }
+
+        self.board.cells = collapsed;
+        self.lines_cleared = full.len();
     }
 
     fn spawn_piece(&mut self) {
