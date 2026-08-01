@@ -35,7 +35,7 @@ pub struct Game {
 
 impl Game {
     pub fn new() -> Self {
-        Self {
+        let mut game = Self {
             active_pieces: Piece::new(
                 PieceKind::I,
                 Position { x: 3, y: 8 },
@@ -58,7 +58,10 @@ impl Game {
             },
             level: GameLevel { level: 1 },
             lines_cleared: 0,
-        }
+        };
+
+        game.apply_speed();
+        game
     }
 
     pub fn update(&mut self, action: Option<PlayerAction>) {
@@ -133,14 +136,31 @@ impl Game {
 
 
     fn update_score(&mut self) {
+        let lines = self.lines_cleared;
+        if lines == 0 {
+            return;
+        }
 
-        // Has enough time elapsed?
+        let points: u32 = match lines {
+            1 => 100,
+            2 => 300,
+            3 => 500,
+            _ => 800,
+        };
+        self.score.points += points;
+        self.lines_cleared = 0;
 
-        // Try moving down
+        self.level.level += (lines / 10) as u32;
+        self.apply_speed();
+    }
 
-        // If collision
+    fn apply_speed(&mut self) {
+        let base = Duration::from_millis(500);
+        let step = Duration::from_millis(25);
+        let level = self.level.level.max(1);
 
-        // Lock Piece
+        let tick = base.saturating_sub(step.saturating_mul(level - 1));
+        self.timing.tick_duration = tick.max(Duration::from_millis(60));
     }
 
     fn update_gravity(&mut self) {
