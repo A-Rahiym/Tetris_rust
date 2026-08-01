@@ -1,6 +1,7 @@
 use std::time::Duration;
 
 use macroquad::prelude::*;
+use ::rand::Rng;
 
 use crate::board::board::Board;
 use crate::board::cell::Cell;
@@ -15,7 +16,8 @@ use crate::piece::rotation::Rotation;
 use crate::score::score::Score;
 use crate::timing::timing::Timing;
 
-#[allow(dead_code)]
+#[allow(dead_code) ]
+#[derive(Debug)]
 pub struct Game {
     pub active_pieces: Piece,
     pub next_pieces: Piece,
@@ -179,12 +181,32 @@ impl Game {
     }
 
     fn spawn_piece(&mut self) {
+        if self.board.is_valid(&self.active_pieces) {
+            return;
+        }
 
-        // Next Piece
+        self.active_pieces = self.next_pieces.clone();
+        self.active_pieces.position = Position { x: 3, y: 0 };
 
-        // becomes Active Piece
+        self.next_pieces = Piece::new(
+            Self::random_kind(),
+            Position { x: 3, y: 0 },
+            Rotation::North,
+        );
+    }
 
-        // Generate another Next Piece
+    fn random_kind() -> PieceKind {
+        const KINDS: [PieceKind; 7] = [
+            PieceKind::I,
+            PieceKind::O,
+            PieceKind::T,
+            PieceKind::S,
+            PieceKind::Z,
+            PieceKind::J,
+            PieceKind::L,
+        ];
+        let idx = ::rand::rng().random_range(0..7);
+        KINDS[idx as usize]
     }
 
     fn check_game_over(&mut self) {
