@@ -1,3 +1,4 @@
+use crate::board::board::BOARD_WIDTH;
 use crate::board::cell::Cell;
 use crate::game::game::Game;
 use crate::piece::kind::PieceKind;
@@ -77,16 +78,36 @@ impl Renderer {
     }
 
     fn draw_next_piece(game: &Game) {
+        const NEXT_X: f32 = BOARD_X + BOARD_WIDTH as f32 * CELL_SIZE + 40.0;
+        const NEXT_Y: f32 = BOARD_Y + 40.0;
 
-        // Draw the next falling piece
+        draw_text("NEXT", NEXT_X, NEXT_Y - 20.0, 30.0, WHITE);
+
+        let piece = &game.next_pieces;
+        for row in 0..4 {
+            for col in 0..4 {
+                if piece.shape.cells[row][col] {
+                    draw_rectangle(
+                        NEXT_X + col as f32 * CELL_SIZE,
+                        NEXT_Y + row as f32 * CELL_SIZE,
+                        CELL_SIZE,
+                        CELL_SIZE,
+                        Self::piece_color(piece.kind),
+                    );
+                }
+            }
+        }
     }
 
     fn draw_score(game: &Game) {
-
-        // Draw score
+        let x = BOARD_X + BOARD_WIDTH as f32 * CELL_SIZE + 40.0;
+        draw_text("SCORE", x, BOARD_Y + 230.0, 30.0, WHITE);
+        draw_text(&game.score.points.to_string(), x, BOARD_Y + 265.0, 30.0, WHITE);
     }
 
     fn draw_level(game: &Game) {
-        // Draw Level
+        let x = BOARD_X + BOARD_WIDTH as f32 * CELL_SIZE + 40.0;
+        draw_text("LEVEL", x, BOARD_Y + 310.0, 30.0, WHITE);
+        draw_text(&game.level.level.to_string(), x, BOARD_Y + 345.0, 30.0, WHITE);
     }
 }
