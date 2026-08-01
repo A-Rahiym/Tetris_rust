@@ -252,11 +252,8 @@ impl Game {
     }
 
     fn check_game_over(&mut self) {
-
-        // Can new piece fit?
-
-        // If not
-
-        // state = GameOver
+        if !self.board.is_valid(&self.active_pieces) {
+            self.state = GameState::GameOver;
+        }
     }
 }
