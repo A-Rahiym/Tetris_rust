@@ -14,10 +14,10 @@ use crate::renderer::renderer::Renderer;
 #[macroquad::main("Tetris")]
 async fn main() {
     let mut game = Game::new();
-
     loop {
         clear_background(BLACK);
-
+        println!("New frame");
+        println!("Game 1: {:?}", game);
         let action = input::input::poll();
         game.update(action);
 

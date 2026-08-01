@@ -3,13 +3,13 @@ use crate::piece::piece::Piece;
 
 #[derive(Clone, Debug, PartialEq)]
 pub struct Board {
-    pub cells: [[Cell; 10]; 20],
+    pub cells: [[Cell; 20]; 20],
 }
 
 impl Board {
     pub fn new() -> Self {
         Self {
-            cells: [[Cell::Empty; 10]; 20],
+            cells: [[Cell::Empty; 20]; 20],
         }
     }
 
